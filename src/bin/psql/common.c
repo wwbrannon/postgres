@@ -96,6 +96,20 @@ void
 psql_error(const char *fmt,...)
 {
 	va_list		ap;
+    char        *iced_fmt;
+    char        *ice = "ICED!: ";
+
+    iced_fmt = malloc(strlen(fmt) + strlen(ice) + 1);
+    if(iced_fmt != NULL)
+    {
+        iced_fmt[0] = '\0'; // make sure it's null-terminated
+        iced_fmt = strcat(iced_fmt, ice);
+        iced_fmt = strcat(iced_fmt, fmt);
+    } else
+    {
+        fprintf(stderr, "%s", "out of memory");
+        return;
+    }
 
 	fflush(stdout);
 	if (pset.queryFout && pset.queryFout != stdout)
@@ -104,7 +118,7 @@ psql_error(const char *fmt,...)
 	if (pset.inputfile)
 		fprintf(stderr, "%s:%s:" UINT64_FORMAT ": ", pset.progname, pset.inputfile, pset.lineno);
 	va_start(ap, fmt);
-	vfprintf(stderr, _(fmt), ap);
+	vfprintf(stderr, _(iced_fmt), ap);
 	va_end(ap);
 }
 
@@ -117,7 +131,7 @@ void
 NoticeProcessor(void *arg, const char *message)
 {
 	(void) arg;					/* not used */
-	psql_error("%s", message);
+	psql_error("ICED!: %s", message);
 }
 
 
