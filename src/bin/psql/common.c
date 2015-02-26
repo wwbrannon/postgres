@@ -119,7 +119,9 @@ psql_error(const char *fmt,...)
 		fprintf(stderr, "%s:%s:" UINT64_FORMAT ": ", pset.progname, pset.inputfile, pset.lineno);
 	va_start(ap, fmt);
 	vfprintf(stderr, _(iced_fmt), ap);
+	
 	va_end(ap);
+	free(iced_fmt);
 }
 
 
